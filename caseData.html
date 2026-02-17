@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Utec Support | Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/x-icon" href="images/fav.png">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .custom-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #4A2594;
+            border-radius: 10px;
+        }
+
+        .dropdown-animate {
+            animation: slideUp 0.2s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table ke cells mein text wrap na ho */
+        .table-container table th,
+        .table-container table td {
+            white-space: nowrap;
+        }
+
+        /* Horizontal scrollbar ko improve karne ke liye (Optional) */
+        .table-container {
+            scrollbar-width: thin;
+            /* Firefox ke liye */
+        }
+
+        /* Scrollbar color (Chrome/Safari/Edge ke liye) */
+        .table-container::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            /* slate-300 */
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body class="bg-[#F8FAFC] text-slate-800" x-data="{ mobileMenu: false }">
+
+    <header class="sticky top-0 z-50 w-full bg-[#4A2594] border-b border-white/10 shadow-lg">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6">
+            <div class="flex justify-between items-center h-20">
+                <a href="index.html" class="shrink-0">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <div class="bg-white rounded-xl shrink-0">
+                            <img src="images/logo.png" alt="UTEC Logo" class="w-8 h-8 sm:w-14 sm:h-14 rounded-xl">
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-white font-black text-lg sm:text-xl leading-none">Process</span>
+                            <span
+                                class="bg-gradient-to-r from-yellow-400 to-yellow-200 bg-clip-text text-transparent text-[10px] sm:text-[14px] font-bold tracking-tight sm:tracking-widest whitespace-nowrap">
+                                Support Helpdesk <i class="fas fa-headset"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <nav class="hidden lg:flex items-center space-x-1">
+                    <a href="#"
+                        class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white/90 hover:text-white rounded-lg hover:bg-white/10 transition-all group">
+                        <svg class="w-4 h-4 transition-transform group-hover:-translate-y-1" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        Home
+                    </a>
+                    <a href="index.html"
+                        class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white/90 hover:text-white rounded-lg hover:bg-white/10 transition-all group">
+                        <svg class="w-4 h-4 transition-transform group-hover:-translate-y-1" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                        </svg>
+                        Dashboard
+                    </a>
+                    <div class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                        <button
+                            class="flex items-center gap-2 px-4 py-2 bg-white/10 text-sm font-semibold text-white/90 hover:text-white rounded-lg hover:bg-white/10 transition-all">
+                            <svg class="w-4 h-4 transition-transform group-hover:-translate-y-1" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2"
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Pages
+                            <svg class="w-3 h-3 transition-transform group-hover:-translate-y-1"
+                                :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div x-show="open" x-cloak x-transition
+                            class="absolute top-full left-0 w-64 bg-white shadow-2xl rounded-xl border border-slate-200 mt-0 py-2 dropdown-animate">
+                            <a href="caseData.html"
+                                class="flex items-center bg-yellow-100 gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-yellow-200">
+                                <svg class="w-4 h-4 text-sky-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                </svg>
+                                Helpdesk Cases
+                            </a>
+                            <a href="uploadedData.html"
+                                class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-200">
+                                <svg class="w-4 h-4 text-sky-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                                </svg>
+                                Uploaded Data
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <div class="relative group" x-data="{ open: false }">
+                        <button
+                            class="flex items-center gap-3 p-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors">
+                            <img class="w-9 h-9 rounded-full border-2 border-white/20" src="images/user.png" alt="User">
+                            <div class="hidden sm:block text-left pr-2">
+                                <p class="text-xs font-bold text-white leading-tight">Username</p>
+                                <p class="text-[12px] text-purple-300 font-medium">Admin</p>
+                            </div>
+                        </button>
+                        <div
+                            class="hidden group-hover:block absolute right-0 w-64 bg-white shadow-2xl rounded-xl border border-slate-200 mt-0 dropdown-animate p-2">
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                Change Password
+                            </a>
+                            <div class="h-[1px] bg-slate-100 my-1"></div>
+                            <a href="#"
+                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 rounded-lg">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-width="2"
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                </svg>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+
+                    <button @click="mobileMenu = !mobileMenu" class="lg:hidden p-2 text-white outline-none">
+                        <i class="fas" :class="mobileMenu ? 'fa-times' : 'fa-bars'"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div x-show="mobileMenu" x-cloak x-transition
+            class="lg:hidden bg-white border-t border-slate-200 shadow-2xl h-64 overflow-y-auto">
+            <div class="px-4 py-4 space-y-2">
+                <a href="#" class="block px-4 py-3 text-slate-700 font-bold hover:bg-slate-50 rounded-lg"><i
+                        class="fas fa-home mr-2 text-purple-700"></i> Home</a>
+                <a href="helpdeskDash.html"
+                    class="block px-4 py-3 text-slate-700 font-bold hover:bg-slate-50 rounded-lg"><i
+                        class="fas fa-dashboard mr-2 text-purple-700"></i> Dashboard</a>
+                <a href="caseData.html" class="block px-4 py-3 text-slate-700 font-bold hover:bg-slate-50 rounded-lg"><i
+                        class="fas fa-database mr-2 text-purple-700"></i> Helpdesk Cases Data</a>
+                <a href="uploadedData.html"
+                    class="block px-4 py-3 text-slate-700 font-bold hover:bg-slate-50 rounded-lg"><i
+                        class="fas fa-database mr-2 text-purple-700"></i> Uploaded Data</a>
+                <button @click="mobileMenu = false; document.getElementById('openModal').click()"
+                    class="w-full text-left px-4 py-3 text-slate-700 font-bold hover:bg-slate-50 rounded-lg"><i
+                        class="fas fa-upload mr-2 text-purple-700"></i> Upload</button>
+                <div class="border-t border-slate-100 pt-2">
+                    <a href="#" class="block px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg"><i
+                            class="fas fa-key mr-2"></i> Change Password</a>
+                    <a href="#" class="block px-4 py-3 text-red-600 font-bold hover:bg-red-50 rounded-lg"><i
+                            class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-20 mb-4">
+        <div class="w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
+            <div
+                class="p-2 border-b border-slate-100 bg-slate-100/200 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+
+                <div>
+                    <h3 class="flex items-center gap-2 text-sm font-bold text-slate-700 uppercase tracking-wider">
+                        <i class="fa-solid fa-database text-blue-800 text-lg"></i>
+                        Helpdesk Cases Data
+                    </h3>
+                    <p class="text-xs md:text-sm text-gray-500 ml-6 font-medium">
+                        Your expanded Field Support Cases: Add, Edit, and Filter the cases with complete
+                        visibility
+                    </p>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center gap-3 w-full lg:w-auto">
+                    <div class="relative w-full md:w-72">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fas fa-search text-sky-800"></i>
+                        </span>
+                        <input type="text"
+                            class="block w-full py-2.5 pl-10 pr-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all duration-200 shadow-sm text-sm placeholder:text-slate-400"
+                            placeholder="Search records...">
+                    </div>
+                </div>
+                <a href="form.html">
+                    <button
+                        class="flex items-center justify-center gap-2 w-full md:w-auto px-5 py-2.5 bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl font-medium rounded-base text-sm px-4 py-2 text-center leading-5 text-[#fff] text-sm font-bold rounded-xl transition-all duration-500 transform hover:-translate-y-0.5 active:scale-95 whitespace-nowrap">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        Add New Record
+                    </button>
+                </a>
+            </div>
+            <div class="p-2 bg-gray-200">
+                <div class="mb-0 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4 items-end">
+
+                        <div class="relative group">
+                            <label class="block text-[11px] font-bold text-slate-500 tracking-widest mb-1 ml-1">
+                                Advisor
+                            </label>
+                            <div class="relative">
+                                <select
+                                    class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 block p-1 px-2 appearance-none cursor-pointer transition-all hover:bg-white hover:shadow-md">
+                                    <option selected>Select Advisor</option>
+                                    <option>Advisor 1</option>
+                                    <option>Advisor 2</option>
+                                    <option>Advisor 3</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <label
+                                class="block text-[11px] font-bold text-slate-500 tracking-widest mb-1 ml-1">Source</label>
+                            <div class="relative">
+                                <select
+                                    class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 block p-1 px-2 appearance-none cursor-pointer transition-all hover:bg-white hover:shadow-md">
+                                    <option selected disabled>Select Source</option>
+                                    <option>Call</option>
+                                    <option>Chat</option>
+                                    <option>Email</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <label class="block text-[11px] font-bold text-slate-500 tracking-widest mb-1 ml-1">CC
+                                Status</label>
+                            <div class="relative">
+                                <select
+                                    class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 block p-1 px-2 appearance-none cursor-pointer transition-all hover:bg-white hover:shadow-md">
+                                    <option selected disabled>Select CC Status</option>
+                                    <option>Open</option>
+                                    <option>Resolved</option>
+                                    <option>Closed</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <label class="block text-[11px] font-bold text-slate-500 tracking-widest mb-1 ml-1">Customer
+                                Closure</label>
+                            <div class="relative">
+                                <select
+                                    class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 block p-1 px-2 appearance-none cursor-pointer transition-all hover:bg-white hover:shadow-md">
+                                    <option selected disabled>Select Customer Closure</option>
+                                    <option>Yes</option>
+                                    <option>No</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <label
+                                class="block text-[11px] font-bold text-slate-500 tracking-widest mb-1 ml-1">Escalation</label>
+                            <div class="relative">
+                                <select
+                                    class="w-full bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 block p-1 px-2 appearance-none cursor-pointer transition-all hover:bg-white hover:shadow-md">
+                                    <option selected disabled>Select Escalation</option>
+                                    <option>Within TAT</option>
+                                    <option>Initially Closed</option>
+                                    <option>L1-WG SPOC</option>
+                                    <option>L2-CC Manager</option>
+                                    <option>L3-OPS Head</option>
+                                </select>
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative group">
+                            <button
+                                class="flex items-center justify-center gap-2 px-2 py-2 w-full whitespace-nowrap bg-[#FCB045] hover:bg-[#F0A132] text-white text-[10px] xl:text-xs font-bold rounded-xl transition-all duration-500 transform hover:-translate-y-0.5 active:scale-95 border border-amber-200">
+                                <i class="fa-solid fa-rotate-right"></i>
+                                Clear All
+                            </button>
+                        </div>
+
+                        <div class="relative group">
+                            <button
+                                class="flex items-center justify-center gap-2 px-2 py-2 w-full whitespace-nowrap bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br text-white text-[10px] xl:text-xs font-bold rounded-xl shadow-lg shadow-sky-100 transition-all duration-500 transform hover:-translate-y-0.5 active:scale-95">
+                                <i class="fa-solid fa-filter"></i>
+                                Apply Filters
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="max-h-[390px] overflow-y-auto table-container table-container">
+                <table class="w-full text-left border-collapse">
+                    <thead class="sticky top-0 z-10 bg-slate-50">
+                        <tr class="bg-sky-900 text-white">
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Sr. no.</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Edit</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Advisor Name</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Date
+                            </th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                User
+                                Name</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Contact Number</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                User
+                                Email</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Email
+                                Subject</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Chat
+                                ID</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Source</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Persona</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Pincode</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Depot
+                            </th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Region</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Zone
+                            </th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Category</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Sub-Category</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Disposition</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Ticket ID</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Ticket Creation Date</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Ticket Closure Date</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Description</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Workgroup Dependency</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                CC
+                                Status</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Case
+                                Closure Date</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Customer Closure</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Today's Ageing</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Open
+                                Till Last Action Date</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Day
+                            </th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Week
+                            </th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Open
+                                Till Date</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                GRP
+                            </th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Benchmark</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                TAT
+                                Status</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Escalation</th>
+                            <th class="px-6 py-3 text-[11px] font-semibold uppercase tracking-widest whitespace-nowrap">
+                                Actioned By</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 bg-white">
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">1</td>
+                            <td class="px-6 py-3 whitespace-nowrap">
+                                <a href="form.html" class="text-sky-800 hover:text-sky-400">
+                                    <i class="fas fa-pen-to-square"></i>
+                                </a>
+                            </td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">John Wick</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">15-02-2024</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">john_doe</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">+91 9999999999</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">john@example.com</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Login Issue</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">CH-12345</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Website</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">User</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">110001</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">North-Depot</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">NCR</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Delhi</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Technical</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">App Crash</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Closed</td>
+                            <td
+                                class="px-6 py-3 text-[13px] text-slate-600 font-medium text-blue-600 whitespace-nowrap">
+                                TIC-0099</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">10-02-2024</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">14-02-2024</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">App not working</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">None</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Resolved</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">14-02-2024</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Yes</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">2 Days</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">1 Day</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Monday</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Week 06</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">4 Days</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Group A</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Standard</td>
+                            <td class="px-6 py-3 text-[13px] text-emerald-600 font-semibold whitespace-nowrap">Within
+                                TAT</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Level 1</td>
+                            <td class="px-6 py-3 text-[13px] text-slate-600 whitespace-nowrap">Advisor Name</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-4 fixed bottom-0 w-full z-40">
+        <div class="max-w-[1440px] mx-auto px-6 text-center">
+            <div class="text-slate-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
+                • © 2026 Utech Field Support Helpdesk BY Teleperformance •
+            </div>
+        </div>
+    </footer>
+    <script>
+        const openBtn = document.getElementById('openModal');
+        const closeBtn = document.getElementById('closeModal');
+        const modal = document.getElementById('modalOverlay');
+
+        openBtn.onclick = () => { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+        const hideModal = () => { modal.classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        closeBtn.onclick = hideModal;
+        modal.onclick = (e) => { if (e.target === modal) hideModal(); }
+    </script>
+</body>
+
+</html>
